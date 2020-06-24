@@ -12,6 +12,8 @@ import numpy as np
 import torch.nn as nn
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.tensorboard import SummaryWriter
+
 
 from autoPyTorch.pipeline.base.pipeline_node import PipelineNode
 
@@ -126,6 +128,11 @@ class SimpleTrainNode(PipelineNode):
         self.logger.debug("Start train. Budget: " + str(budget))
 
         last_log_time = time.time()
+
+        tensorboard_logging = True
+
+        if tensorboard_logging:
+            writer = SummaryWriter()
         while True:
             # prepare epoch
             log = dict()
@@ -173,14 +180,18 @@ class SimpleTrainNode(PipelineNode):
             if stop_training:
                 break
 
+            print('HERE')
+
             if tensorboard_logging and time.time() - last_log_time >= pipeline_config['tensorboard_min_log_interval']:
-                import tensorboard_logger as tl
-                worker_path = 'Train/'
-                tl.log_value(worker_path + 'budget', float(budget), epoch)
-                for name, value in log.items():
-                    tl.log_value(worker_path + name, float(value), epoch)
+                # import tensorboard_logger as tl
+                # worker_path = 'Train/'
+                # tl.log_value(worker_path + 'budget', float(budget), epoch)
+                # for name, value in log.items():
+                #     tl.log_value(worker_path + name, float(value), epoch)
+                # last_log_time = time.time()
+                print("saving!")
+                self.tensorboard_log(writer, budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"] )
                 last_log_time = time.time()
-            
 
         # wrap up
         wrap_up_start_time = time.time()
@@ -197,11 +208,12 @@ class SimpleTrainNode(PipelineNode):
             final_log = max(logs, key=lambda x:x[opt_metric_name])
 
         if tensorboard_logging:
-            import tensorboard_logger as tl
-            worker_path = 'Train/'
-            tl.log_value(worker_path + 'budget', float(budget), epoch)
-            for name, value in final_log.items():
-                tl.log_value(worker_path + name, float(value), epoch)
+            # import tensorboard_logger as tl
+            # worker_path = 'Train/'
+            # tl.log_value(worker_path + 'budget', float(budget), epoch)
+            # for name, value in final_log.items():
+            #     tl.log_value(worker_path + name, float(value), epoch)
+            self.tensorboard_log(writer, budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"] )
 
         if trainer.latest_checkpoint:
             final_log['checkpoint'] = trainer.latest_checkpoint
@@ -305,6 +317,18 @@ class SimpleTrainNode(PipelineNode):
         for name, technique in self.batch_loss_computation_techniques.items():
             options += technique.get_pipeline_config_options()
         return options
+
+    def tensorboard_log(self, writer, budget, epoch, log, logdir):
+
+        worker_path = 'Train/'
+        try:
+            writer.add_scalar(worker_path + 'budget', float(budget), int(time.time()))
+        except:
+            writer.add_scalar(logdir+worker_path + 'budget', float(budget), int(time.time()))
+            
+        writer.add_scalar(worker_path + 'epoch', float(epoch + 1), int(time.time()))
+        for name, value in log.items():
+            writer.add_scalar(worker_path + name, float(value), int(time.time()))
 
 
 def predict(network, test_loader, metrics, device, move_network=True):

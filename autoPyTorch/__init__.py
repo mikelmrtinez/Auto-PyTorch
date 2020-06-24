@@ -1,6 +1,7 @@
 import sys, os
 hpbandster = os.path.abspath(os.path.join(__file__, '..', '..', 'submodules', 'HpBandSter'))
 sys.path.append(hpbandster)
+print("Editing!")
 
 from autoPyTorch.core.autonet_classes import AutoNetClassification, AutoNetMultilabel, AutoNetRegression, AutoNetImageClassification, AutoNetImageClassificationMultipleDatasets
 from autoPyTorch.data_management.data_manager import DataManager

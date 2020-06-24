@@ -12,6 +12,7 @@ import numpy as np
 import torch.nn as nn
 from torch.autograd import Variable
 from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.tensorboard import SummaryWriter
 
 from autoPyTorch.pipeline.base.pipeline_node import PipelineNode
 
@@ -96,6 +97,11 @@ class TrainNode(PipelineNode):
         logs = trainer.model.logs
         epoch = trainer.model.epochs_trained
         training_start_time = time.time()
+
+        #Instantiate the SummaryWriter class if tensrobaord is activated
+        #if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
+        writer = SummaryWriter()
+            
         while True:
             # prepare epoch
             log = dict()
@@ -125,9 +131,12 @@ class TrainNode(PipelineNode):
             logs.append(log)
             log = {key: value for key, value in log.items() if not isinstance(value, np.ndarray)}
             logger.debug("Epoch: " + str(epoch) + " : " + str(log))
-            if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
-                self.tensorboard_log(budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"])
 
+            # if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
+            #     self.tensorboard_log(budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"])
+
+            #if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
+            self.tensorboard_log(writer, budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"])
             if stop_training:
                 break
             
@@ -218,17 +227,30 @@ class TrainNode(PipelineNode):
             options += technique.get_pipeline_config_options()
         return options
     
-    def tensorboard_log(self, budget, epoch, log, logdir):
-        import tensorboard_logger as tl
+    def tensorboard_log(self, writer, budget, epoch, log, logdir):
+
         worker_path = 'Train/'
         try:
-            tl.log_value(worker_path + 'budget', float(budget), int(time.time()))
+            writer.add_scalar(worker_path + 'budget', float(budget), int(time.time()))
         except:
-            tl.configure(logdir)
-            tl.log_value(worker_path + 'budget', float(budget), int(time.time()))
-        tl.log_value(worker_path + 'epoch', float(epoch + 1), int(time.time()))
+            writer.add_scalar(logdir+worker_path + 'budget', float(budget), int(time.time()))
+            
+        writer.add_scalar(worker_path + 'epoch', float(epoch + 1), int(time.time()))
         for name, value in log.items():
-            tl.log_value(worker_path + name, float(value), int(time.time()))
+            writer.add_scalar(worker_path + name, float(value), int(time.time()))
+
+    # def tensorboard_log(self, budget, epoch, log, logdir):
+    #     from torch.utils.tensorboard import SummaryWriter
+    #     worker_path = 'Train/'
+    #     try:
+    #         tl.log_value(worker_path + 'budget', float(budget), int(time.time()))
+    #     except:
+    #         tl.configure(logdir)
+    #         tl.log_value(worker_path + 'budget', float(budget), int(time.time()))
+    #     tl.log_value(worker_path + 'epoch', float(epoch + 1), int(time.time()))
+    #     for name, value in log.items():
+    #         tl.log_value(worker_path + name, float(value), int(time.time()))
+
 
     @staticmethod
     def count_parameters(model):
