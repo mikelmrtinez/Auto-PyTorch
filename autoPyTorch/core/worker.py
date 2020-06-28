@@ -118,9 +118,9 @@ class AutoNetWorker(Worker):
                                             budget=budget, budget_type=self.budget_type, max_budget=self.max_budget, optimize_start_time=optimize_start_time,
                                             refit=False, rescore=False, hyperparameter_config_id=config_id, dataset_info=self.dataset_info)
         except Exception as e:
-            if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:            
-                import tensorboard_logger as tl
-                tl.log_value('Exceptions/' + str(e), budget, int(time.time()))
+            # if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:            
+            #     import tensorboard_logger as tl
+            #     tl.log_value('Exceptions/' + str(e), budget, int(time.time()))
             self.autonet_logger.info(str(e))
             raise e
     

@@ -96,13 +96,13 @@ class OptimizationAlgorithmNoTimeLimit(SubPipelineNode):
         run_id, task_id = pipeline_config['run_id'], pipeline_config['task_id']
 
 
-        global tensorboard_logger_configured
-        if pipeline_config['use_tensorboard_logger'] and not tensorboard_logger_configured:            
-            import tensorboard_logger as tl
-            directory = os.path.join(pipeline_config['result_logger_dir'], "worker_logs_" + str(task_id))
-            os.makedirs(directory, exist_ok=True)
-            tl.configure(directory, flush_secs=60)
-            tensorboard_logger_configured = True
+        # global tensorboard_logger_configured
+        # if pipeline_config['use_tensorboard_logger'] and not tensorboard_logger_configured:            
+        #     import tensorboard_logger as tl
+        #     directory = os.path.join(pipeline_config['result_logger_dir'], "worker_logs_" + str(task_id))
+        #     os.makedirs(directory, exist_ok=True)
+        #     tl.configure(directory, flush_secs=60)
+        #     tensorboard_logger_configured = True
 
         if (refit is not None):
             return self.run_refit(pipeline_config, refit, constants, X_train, Y_train, X_valid, Y_valid)

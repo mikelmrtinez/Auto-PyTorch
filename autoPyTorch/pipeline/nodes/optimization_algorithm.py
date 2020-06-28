@@ -86,11 +86,11 @@ class OptimizationAlgorithm(SubPipelineNode):
         run_id, task_id = pipeline_config['run_id'], pipeline_config['task_id']
 
         # Use tensorboard logger
-        if pipeline_config['use_tensorboard_logger'] and not refit:            
-            import tensorboard_logger as tl
-            directory = os.path.join(pipeline_config['result_logger_dir'], "worker_logs_" + str(task_id))
-            os.makedirs(directory, exist_ok=True)
-            tl.configure(directory, flush_secs=5)
+        # if pipeline_config['use_tensorboard_logger'] and not refit:            
+        #     import tensorboard_logger as tl
+        #     directory = os.path.join(pipeline_config['result_logger_dir'], "worker_logs_" + str(task_id))
+        #     os.makedirs(directory, exist_ok=True)
+        #     tl.configure(directory, flush_secs=5)
 
         # Only do refitting
         if (refit is not None):
@@ -384,8 +384,8 @@ class OptimizationAlgorithm(SubPipelineNode):
         logger.info("[AutoNet] Start " + pipeline_config["algorithm"])
 
         # initialize optimization algorithm
-        if pipeline_config['use_tensorboard_logger']:
-            result_loggers.append(tensorboard_logger())
+        # if pipeline_config['use_tensorboard_logger']:
+        #     result_loggers.append(tensorboard_logger())
 
         HB = self.get_optimization_algorithm_instance(config_space=config_space, run_id=run_id,
             pipeline_config=pipeline_config, ns_host=ns_host, ns_port=ns_port, loggers=result_loggers)
@@ -412,30 +412,6 @@ class OptimizationAlgorithm(SubPipelineNode):
         self.sub_pipeline.root.clean_fit_data()
 
 
-class tensorboard_logger(object):
-    def __init__(self):
-        self.start_time = time.time()
-        self.incumbent = float('inf')
-
-    def new_config(self, config_id, config, config_info):
-        pass
-
-    def __call__(self, job):
-        import tensorboard_logger as tl 
-        # id = job.id
-        budget = job.kwargs['budget']
-        # config = job.kwargs['config']
-        timestamps = job.timestamps
-        result = job.result
-        exception = job.exception
-
-        time_step = int(timestamps['finished'] - self.start_time)
-
-        if result is not None:
-            tl.log_value('BOHB/all_results', result['loss'] * -1, time_step)
-            if result['loss'] < self.incumbent:
-                self.incumbent = result['loss']
-            tl.log_value('BOHB/incumbent_results', self.incumbent * -1, time_step)
 
 
 class combined_logger(object):

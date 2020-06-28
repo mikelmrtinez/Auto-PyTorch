@@ -45,9 +45,9 @@ class MultipleDatasets(SubPipelineNode):
             X_valid = [None] * n_datasets
             Y_valid = [None] * n_datasets
         
-        if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
-            import tensorboard_logger as tl
-            tl.log_value('Train/datasets', float(n_datasets), int(time.time()))
+        # if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
+        #     import tensorboard_logger as tl
+        #     tl.log_value('Train/datasets', float(n_datasets), int(time.time()))
 
         infos = []
         loss = 0
@@ -94,9 +94,9 @@ class MultipleDatasets(SubPipelineNode):
             loss += result['loss']
             losses.append(result['loss'])
         
-        if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
-            import tensorboard_logger as tl
-            tl.log_value('Train/datasets', float(n_datasets), int(time.time()))
+        # if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
+        #     import tensorboard_logger as tl
+        #     tl.log_value('Train/datasets', float(n_datasets), int(time.time()))
 
         loss = loss / n_datasets
 

@@ -118,9 +118,9 @@ class ModuleWorkerNoTimeLimit(Worker):
                                             budget=budget, budget_type=self.budget_type, max_budget=self.max_budget, 
                                             config_id=config_id, working_directory=self.working_directory), random.getstate()
         except Exception as e:
-            if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:            
-                import tensorboard_logger as tl
-                tl.log_value('Exceptions/' + str(e), budget, int(time.time()))
+            # if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:            
+            #     import tensorboard_logger as tl
+            #     tl.log_value('Exceptions/' + str(e), budget, int(time.time()))
             #self.autonet_logger.exception('Exception occurred')
             raise e
 

@@ -129,7 +129,6 @@ class SimpleTrainNode(PipelineNode):
 
         last_log_time = time.time()
 
-        tensorboard_logging = True
 
         if tensorboard_logging:
             writer = SummaryWriter()
@@ -180,8 +179,8 @@ class SimpleTrainNode(PipelineNode):
             if stop_training:
                 break
 
-            print('HERE')
-
+            self.logger.debug("\n HERE\n")
+            break
             if tensorboard_logging and time.time() - last_log_time >= pipeline_config['tensorboard_min_log_interval']:
                 # import tensorboard_logger as tl
                 # worker_path = 'Train/'
