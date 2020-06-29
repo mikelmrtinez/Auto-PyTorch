@@ -98,9 +98,12 @@ class TrainNode(PipelineNode):
         epoch = trainer.model.epochs_trained
         training_start_time = time.time()
 
+        print("RESULT: ",pipeline_config['result_logger_dir'])
+
         #Instantiate the SummaryWriter class if tensrobaord is activated
         if 'use_tensorboard_logger' in pipeline_config and pipeline_config['use_tensorboard_logger']:
             writer = SummaryWriter()
+
             
         while True:
             # prepare epoch
@@ -228,16 +231,17 @@ class TrainNode(PipelineNode):
         return options
     
     def tensorboard_log(self, writer, budget, epoch, log, logdir):
-
+        
         worker_path = 'Train/'
         try:
-            writer.add_scalar(logdir+worker_path + 'budget', float(budget), int(time.time()))
+            writer.add_scalar(worker_path + 'budget', float(budget), int(time.time()))
         except:
             writer.add_scalar(logdir+worker_path + 'budget', float(budget), int(time.time()))
             
-        writer.add_scalar(logdir+worker_path + 'epoch', float(epoch + 1), int(time.time()))
+        writer.add_scalar(worker_path + 'epoch', float(epoch + 1), int(time.time()))
         for name, value in log.items():
-            writer.add_scalar(logdir+worker_path + name, float(value), int(time.time()))
+            writer.add_scalar(worker_path + name, float(value), int(time.time()))
+        
 
     # def tensorboard_log(self, budget, epoch, log, logdir):
     #     from torch.utils.tensorboard import SummaryWriter

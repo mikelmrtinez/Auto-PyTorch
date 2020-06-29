@@ -48,6 +48,8 @@ class ModuleWorkerNoTimeLimit(Worker):
         start_time = time.time()
 
         self.autonet_logger.debug("Starting optimization!")
+        self.autonet_logger.debug("------HERE------!")
+
 
         config.update(self.constant_hyperparameter)
         
@@ -87,15 +89,15 @@ class ModuleWorkerNoTimeLimit(Worker):
 
         self.autonet_logger.info("Training " + str(network_name) + " with budget " + str(budget) + " resulted in score: " + str(loss) + " took " + str((time.time()-start_time)) + " seconds")
 
-        if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:
-            import os
-            log_file = os.path.join(self.working_directory, "worker_logs_" + str(self.pipeline_config['task_id']), 'results.log')
-            sep = '\t'
-            with open(log_file, 'a+') as f:
-                f.write('Result: ' + str(round(loss, 2)) + sep + \
-                        'Budget: ' + str(round(budget)) + '/' + str(round(self.pipeline_config['max_budget'])) + sep + \
-                        'Used time: ' + str(round((time.time()-start_time))) + 'sec (' + str(round((time.time()-start_time)/budget, 2)) + 'x)' + sep + \
-                        'ID: ' + str(config_id) + '\n')
+        # if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:
+        #     import os
+        #     log_file = os.path.join(self.working_directory, "worker_logs_" + str(self.pipeline_config['task_id']), 'results.log')
+        #     sep = '\t'
+        #     with open(log_file, 'a+') as f:
+        #         f.write('Result: ' + str(round(loss, 2)) + sep + \
+        #                 'Budget: ' + str(round(budget)) + '/' + str(round(self.pipeline_config['max_budget'])) + sep + \
+        #                 'Used time: ' + str(round((time.time()-start_time))) + 'sec (' + str(round((time.time()-start_time)/budget, 2)) + 'x)' + sep + \
+        #                 'ID: ' + str(config_id) + '\n')
 
         return  {
                     'loss': loss,
@@ -121,7 +123,7 @@ class ModuleWorkerNoTimeLimit(Worker):
             # if 'use_tensorboard_logger' in self.pipeline_config and self.pipeline_config['use_tensorboard_logger']:            
             #     import tensorboard_logger as tl
             #     tl.log_value('Exceptions/' + str(e), budget, int(time.time()))
-            #self.autonet_logger.exception('Exception occurred')
+            self.autonet_logger.exception('Exception occurred')
             raise e
 
 def module_exists(module_name):

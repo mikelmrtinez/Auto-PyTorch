@@ -127,10 +127,10 @@ class Trainer(object):
         if N==0: # Fixes a bug during initialization
             N=1
 
-        if self.images_plot_count > 0:
-            import tensorboard_logger as tl
-            tl.log_images('Train_Classified/Image', classified, step=epoch)
-            tl.log_images('Train_Misclassified/Image', misclassified, step=epoch)
+        # if self.images_plot_count > 0:
+        #     import tensorboard_logger as tl
+        #     tl.log_images('Train_Classified/Image', classified, step=epoch)
+        #     tl.log_images('Train_Misclassified/Image', misclassified, step=epoch)
 
         if self.checkpoint_path and self.scheduler.snapshot_before_restart and self.scheduler.needs_checkpoint():
             self.latest_checkpoint = save_checkpoint(self.checkpoint_path, self.config_id, self.budget, self.model, self.optimizer, self.scheduler)
@@ -194,10 +194,10 @@ class Trainer(object):
 
                 N += batch_size
 
-        if self.images_plot_count > 0:
-            import tensorboard_logger as tl
-            tl.log_images('Valid_Classified/Image', classified, step=epoch)
-            tl.log_images('Valid_Misclassified/Image', misclassified, step=epoch)
+        # if self.images_plot_count > 0:
+        #     import tensorboard_logger as tl
+        #     tl.log_images('Valid_Classified/Image', classified, step=epoch)
+        #     tl.log_images('Valid_Misclassified/Image', misclassified, step=epoch)
 
         self.model.train()
             

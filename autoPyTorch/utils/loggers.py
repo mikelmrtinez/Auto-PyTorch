@@ -67,7 +67,7 @@ class tensorboard_logger(object):
 
         self.results_logged += 1
 
-        tl.log_value('BOHB/all_results', result['loss'] * -1, self.results_logged)
+        # tl.log_value('BOHB/all_results', result['loss'] * -1, self.results_logged)
 
         if budget not in self.incumbent_results or result['loss'] < self.incumbent_results[budget]:
             self.incumbent_results[budget] = result['loss']
@@ -137,11 +137,11 @@ class tensorboard_logger(object):
             self.mean_results[budget][0] += result['loss']
             self.mean_results[budget][1] += 1
 
-        for b, loss in self.incumbent_results.items():
-            tl.log_value('BOHB/incumbent_results_' + str(b), loss * -1, self.mean_results[b][1])
+        # for b, loss in self.incumbent_results.items():
+        #     tl.log_value('BOHB/incumbent_results_' + str(b), loss * -1, self.mean_results[b][1])
 
-        for b, (loss, n) in self.mean_results.items():
-            tl.log_value('BOHB/mean_results_' + str(b), loss * -1 / n if n > 0 else 0, n)
+        # for b, (loss, n) in self.mean_results.items():
+        #     tl.log_value('BOHB/mean_results_' + str(b), loss * -1 / n if n > 0 else 0, n)
 
         status = dict()
         for b, loss in self.incumbent_results.items():

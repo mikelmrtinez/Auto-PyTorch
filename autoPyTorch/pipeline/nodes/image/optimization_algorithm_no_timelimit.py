@@ -95,6 +95,7 @@ class OptimizationAlgorithmNoTimeLimit(SubPipelineNode):
 
         run_id, task_id = pipeline_config['run_id'], pipeline_config['task_id']
 
+        
 
         # global tensorboard_logger_configured
         # if pipeline_config['use_tensorboard_logger'] and not tensorboard_logger_configured:            
