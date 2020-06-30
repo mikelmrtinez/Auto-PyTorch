@@ -48,7 +48,7 @@ class ModuleWorkerNoTimeLimit(Worker):
         start_time = time.time()
 
         self.autonet_logger.debug("Starting optimization!")
-        self.autonet_logger.debug("------HERE------!")
+        #self.autonet_logger.debug("HERE!")
 
 
         config.update(self.constant_hyperparameter)
@@ -57,9 +57,10 @@ class ModuleWorkerNoTimeLimit(Worker):
 
         if self.guarantee_limits and self.budget_type == 'time':
             import pynisher
+            #self.autonet_logger.debug("self.guarantee_limits TRUE!")
 
             limit_train = pynisher.enforce_limits(mem_in_mb=self.pipeline_config['memory_limit_mb'], wall_time_in_s=int(budget * 4))(self.optimize_pipeline)
-            result = limit_train(config, budget, config_id, start_time)
+            result = limit_train(config, budget, config_id, random.getstate())
 
             if (limit_train.exit_status == pynisher.TimeoutException):
                 raise Exception("Time limit reached. Took " + str((time.time()-start_time)) + " seconds with budget " + str(budget))
@@ -71,6 +72,7 @@ class ModuleWorkerNoTimeLimit(Worker):
                 raise Exception("Exception in train pipeline. Took " + str((time.time()-start_time)) + " seconds with budget " + str(budget))
 
         else:
+            #self.autonet_logger.debug("self.guarantee_limits FALSE!")
             result, randomstate = self.optimize_pipeline(config, budget, config_id, random.getstate())
 
         random.setstate(randomstate)

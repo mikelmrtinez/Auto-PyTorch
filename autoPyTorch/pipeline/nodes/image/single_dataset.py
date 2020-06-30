@@ -15,6 +15,7 @@ class SingleDataset(SubPipelineNode):
 
 
     def fit(self, hyperparameter_config, pipeline_config, X_train, Y_train, X_valid, Y_valid, budget, budget_type, config_id, working_directory):
+
         return self.sub_pipeline.fit_pipeline(hyperparameter_config=hyperparameter_config,
                                               pipeline_config=pipeline_config,
                                               X_train=X_train, Y_train=Y_train, X_valid=X_valid, Y_valid=Y_valid,

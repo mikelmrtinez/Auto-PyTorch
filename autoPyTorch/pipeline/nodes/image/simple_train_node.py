@@ -54,7 +54,6 @@ class SimpleTrainNode(PipelineNode):
             train_indices, valid_indices):
 
         
-        print("HERE\n")
         if budget < 1e-5:
             return {'loss': float('inf') if pipeline_config["minimize"] else -float('inf'), 'info': dict()}
 
@@ -129,8 +128,8 @@ class SimpleTrainNode(PipelineNode):
         # self.logger.debug("Test time: " + str(time_used) + "s : \n" + str(pprint.pformat(train_loader.dataset.get_times('train_'))))
         
         self.logger.debug("Start train. Budget: " + str(budget))
-        self.logger.debug("\n SIMPLE NODE FILE\n")
-        fjgesje
+        #self.logger.debug("\n SIMPLE NODE FILE\n")
+        
 
         last_log_time = time.time()
 
@@ -184,7 +183,7 @@ class SimpleTrainNode(PipelineNode):
             if stop_training:
                 break
 
-            self.logger.debug("\n HERE\n")
+            
             
             if tensorboard_logging and time.time() - last_log_time >= pipeline_config['tensorboard_min_log_interval']:
                 # import tensorboard_logger as tl
@@ -193,7 +192,7 @@ class SimpleTrainNode(PipelineNode):
                 # for name, value in log.items():
                 #     tl.log_value(worker_path + name, float(value), epoch)
                 # last_log_time = time.time()
-                print("saving!")
+                
                 self.tensorboard_log(writer, budget=budget, epoch=epoch, log=log, logdir=pipeline_config["result_logger_dir"] )
                 last_log_time = time.time()
 
@@ -212,7 +211,7 @@ class SimpleTrainNode(PipelineNode):
             final_log = max(logs, key=lambda x:x[opt_metric_name])
 
         if tensorboard_logging:
-            print("Here")
+            #print("Here")
             # import tensorboard_logger as tl
             # worker_path = 'Train/'
             # tl.log_value(worker_path + 'budget', float(budget), epoch)
